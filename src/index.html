@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lazy Loading - by Terra</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css" />
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: system-ui, sans-serif; padding: 2rem; background: #111; color: #fff; }
+            h1 { margin-bottom: 1rem; }
+            h2 { margin: 2rem 0 1rem; font-size: 1.2rem; color: #888; }
+            .spacer { height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #444; }
+            .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+            .grid img { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; }
+            .bg-item { width: 100%; height: 300px; background-size: cover; background-position: center; border-radius: 8px; }
+            .grid video { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; }
+            .grid iframe { width: 100%; height: 300px; border: none; border-radius: 8px; }
+            .manual-card { position: relative; }
+            .manual-card img,
+            .manual-card video,
+            .manual-card iframe { width: 100%; height: 300px; object-fit: cover; border-radius: 8px; border: none; }
+            .manual-card .bg-item { width: 100%; }
+            .btn-load { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1; padding: 0.6rem 1.4rem; background: #fff; color: #111; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.3s ease; }
+            .btn-load:hover { background: #ddd; }
+            .btn-load.is-hidden { opacity: 0; pointer-events: none; }
+            .slider-wrapper { margin-bottom: 2rem; }
+            .slider-wrapper .tns-outer { border-radius: 8px; overflow: hidden; }
+            .slider-item { height: 400px; }
+            .slider-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+            .slider-item .bg-item { height: 100%; }
+            .tns-nav { text-align: center; margin-top: 1rem; }
+            .tns-nav button { width: 10px; height: 10px; border-radius: 50%; border: none; background: #444; margin: 0 4px; cursor: pointer; padding: 0; }
+            .tns-nav button.tns-nav-active { background: #fff; }
+            .marquee { display: flex; overflow: hidden; height: 250px; width: 100%; position: relative; }
+            .marquee-item { flex-shrink: 0; width: 350px; height: 100%; padding: 0 8px; }
+            .marquee-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; display: block; }
+
+            /* Lazy styles */
+            .g--lazy-01,
+            .g--lazy-manual {
+                opacity: 0;
+                transition: opacity 0.4s ease;
+            }
+            .g--lazy-01--is-loading {
+                opacity: 0.3;
+            }
+            .g--lazy-01--is-active {
+                opacity: 1;
+            }
+            .g--lazy-01--is-error {
+                opacity: 1;
+                outline: 2px solid red;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>@terrahq/lazy — Demo</h1>
+
+        <h2>Images (scroll down)</h2>
+        <div class="spacer">Scroll down to load images</div>
+
+        <div class="grid">
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy1/600/400" alt="Demo 1" />
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy2/600/400" alt="Demo 2" />
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy3/600/400" alt="Demo 3" />
+        </div>
+
+        <div class="spacer">More images below</div>
+
+        <div class="grid">
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy4/600/400" alt="Demo 4" />
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy5/600/400" alt="Demo 5" />
+            <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy6/600/400" alt="Demo 6" />
+        </div>
+
+        <h2>Background Images</h2>
+        <div class="spacer">Scroll down for backgrounds</div>
+
+        <div class="grid">
+            <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/lazy7/600/400"></div>
+            <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/lazy8/600/400"></div>
+            <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/lazy9/600/400"></div>
+        </div>
+
+        <h2>Videos</h2>
+        <div class="spacer">Scroll down for videos</div>
+
+        <div class="grid">
+            <video class="g--lazy-01" muted loop playsinline autoplay data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"></video>
+            <video class="g--lazy-01" muted loop playsinline autoplay>
+                <source data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4" />
+            </video>
+            <video class="g--lazy-01" muted loop playsinline autoplay data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"></video>
+        </div>
+
+        <h2>Iframes</h2>
+        <div class="spacer">Scroll down for iframes</div>
+
+        <div class="grid">
+            <iframe class="g--lazy-01" data-src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe class="g--lazy-01" data-src="https://www.openstreetmap.org/export/embed.html?bbox=-56.25%2C-34.95%2C-56.10%2C-34.85&layer=mapnik" allowfullscreen></iframe>
+            <iframe class="g--lazy-01" data-src="https://www.youtube.com/embed/9bZkp7q19f0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <h2>Manual Trigger (click to load)</h2>
+
+        <div class="grid">
+            <div class="manual-card">
+                <button class="btn-load" data-target="#manual-img">Load Image</button>
+                <img id="manual-img" class="g--lazy-manual" data-src="https://picsum.photos/seed/manual1/600/400" alt="Manual image" />
+            </div>
+            <div class="manual-card">
+                <button class="btn-load" data-target="#manual-video">Load Video</button>
+                <video id="manual-video" class="g--lazy-manual" muted loop playsinline autoplay data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"></video>
+            </div>
+            <div class="manual-card">
+                <button class="btn-load" data-target="#manual-iframe">Load Iframe</button>
+                <iframe id="manual-iframe" class="g--lazy-manual" data-src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="grid" style="margin-top: 1rem;">
+            <div class="manual-card">
+                <button class="btn-load" data-target="#manual-bg">Load Background</button>
+                <div id="manual-bg" class="g--lazy-manual bg-item" data-src="https://picsum.photos/seed/manual2/600/400"></div>
+            </div>
+            <div class="manual-card">
+                <button class="btn-load" data-target="#manual-img2">Load Image 2</button>
+                <img id="manual-img2" class="g--lazy-manual" data-src="https://picsum.photos/seed/manual3/600/400" alt="Manual image 2" />
+            </div>
+            <div class="manual-card">
+                <button class="btn-load" data-all>Load All Remaining</button>
+            </div>
+        </div>
+
+        <h2>Infinite Marquee + Lazy (continuous horizontal loop)</h2>
+        <div class="spacer">Scroll down for marquee</div>
+
+        <div class="marquee" id="marquee">
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee1/700/500" alt="Marquee 1" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee2/700/500" alt="Marquee 2" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee3/700/500" alt="Marquee 3" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee4/700/500" alt="Marquee 4" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee5/700/500" alt="Marquee 5" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee6/700/500" alt="Marquee 6" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee7/700/500" alt="Marquee 7" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marquee8/700/500" alt="Marquee 8" /></div>
+        </div>
+
+        <h2 style="margin-top: 2rem;">Infinite Marquee Reversed + Lazy</h2>
+
+        <div class="marquee" id="marquee-reversed">
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev1/700/500" alt="Marquee Rev 1" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev2/700/500" alt="Marquee Rev 2" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev3/700/500" alt="Marquee Rev 3" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev4/700/500" alt="Marquee Rev 4" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev5/700/500" alt="Marquee Rev 5" /></div>
+            <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev6/700/500" alt="Marquee Rev 6" /></div>
+        </div>
+
+        <h2>Tiny Slider + Lazy (horizontal scroll)</h2>
+        <div class="spacer">Scroll down for slider</div>
+
+        <div class="slider-wrapper">
+            <div id="slider">
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide1/1200/400" alt="Slide 1" />
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide2/1200/400" alt="Slide 2" />
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide3/1200/400" alt="Slide 3" />
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide4/1200/400" alt="Slide 4" />
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide5/1200/400" alt="Slide 5" />
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide6/1200/400" alt="Slide 6" />
+                </div>
+                <div class="slider-item">
+                    <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/slide7/1200/400"></div>
+                </div>
+                <div class="slider-item">
+                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide8/1200/400" alt="Slide 8" />
+                </div>
+            </div>
+        </div>
+
+        <h2>Error Test</h2>
+        <div class="grid">
+            <img class="g--lazy-01" data-src="https://invalid-url-that-will-fail.test/no-image.jpg" alt="Error test" />
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
+        <script type="module">
+            import Lazy from './js/Lazy.js';
+            import gsap from 'gsap';
+            import { horizontalLoop } from '@andresclua/infinite-marquee-gsap';
+
+            // Auto lazy — loads on scroll via IntersectionObserver
+            const lazy = new Lazy({
+                selector: '.g--lazy-01',
+                rootMargin: '100px 0px',
+                onLoading: (el) => console.log('Loading:', el),
+                onSuccess: (el) => console.log('Loaded:', el),
+                onError: (el) => console.log('Error:', el),
+            });
+
+            // Manual lazy — no observer, only loads via .load()
+            const manualLazy = new Lazy({
+                selector: '.g--lazy-manual',
+                successClass: 'g--lazy-01--is-active',
+                loadingClass: 'g--lazy-01--is-loading',
+                errorClass: 'g--lazy-01--is-error',
+                rootMargin: '0px',
+                onSuccess: (el) => console.log('Manual loaded:', el),
+            });
+
+            // Disconnect observer so nothing auto-loads
+            manualLazy.destroy();
+
+            // Infinite Marquee — continuous horizontal loop using horizontalLoop directly
+            const marqueeEl = document.querySelector('#marquee');
+            const marqueeLoop = horizontalLoop(marqueeEl.children, {
+                paused: false,
+                repeat: -1,
+                speed: 1,
+            });
+
+            // Pause on hover
+            marqueeEl.addEventListener('mouseenter', () => gsap.to(marqueeLoop, { timeScale: 0, overwrite: true }));
+            marqueeEl.addEventListener('mouseleave', () => gsap.to(marqueeLoop, { timeScale: 1, overwrite: true }));
+
+            // Reversed marquee
+            const marqueeRevEl = document.querySelector('#marquee-reversed');
+            const marqueeRevLoop = horizontalLoop(marqueeRevEl.children, {
+                paused: false,
+                repeat: -1,
+                reversed: true,
+                speed: 0.8,
+            });
+            gsap.set(marqueeRevLoop, { timeScale: -1 });
+
+            marqueeRevEl.addEventListener('mouseenter', () => gsap.to(marqueeRevLoop, { timeScale: 0, overwrite: true }));
+            marqueeRevEl.addEventListener('mouseleave', () => gsap.to(marqueeRevLoop, { timeScale: -1, overwrite: true }));
+
+            // Tiny Slider — slides become visible on swipe, IO picks them up
+            const slider = tns({
+                container: '#slider',
+                items: 1,
+                slideBy: 1,
+                gutter: 16,
+                loop: false,
+                nav: true,
+                controls: true,
+                controlsText: ['\u2190', '\u2192'],
+                responsive: {
+                    768: { items: 2 },
+                    1024: { items: 3 },
+                },
+            });
+
+            // After each slide transition, revalidate so newly visible slides get observed
+            slider.events.on('transitionEnd', () => {
+                lazy.revalidate();
+            });
+
+            // Wire up buttons
+            document.querySelectorAll('.btn-load').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    if (btn.hasAttribute('data-all')) {
+                        // Load all remaining manual elements
+                        document.querySelectorAll('.g--lazy-manual').forEach((el) => {
+                            manualLazy.load(el);
+                        });
+                        document.querySelectorAll('.btn-load').forEach((b) => b.classList.add('is-hidden'));
+                    } else {
+                        const target = document.querySelector(btn.getAttribute('data-target'));
+                        if (target) manualLazy.load(target);
+                        btn.classList.add('is-hidden');
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

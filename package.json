@@ -1,0 +1,24 @@
+{
+    "name": "@terrahq/lazy",
+    "private": false,
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./dist/Lazy.umd.js",
+    "module": "./dist/Lazy.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/Lazy.es.js",
+            "require": "./dist/Lazy.umd.cjs"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@andresclua/infinite-marquee-gsap": "^0.0.15",
+        "gsap": "^3.14.2",
+        "vite": "^5.4.10"
+    }
+}
