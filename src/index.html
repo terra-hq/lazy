@@ -3,12 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Lazy Loading - by Terra</title>
+        <title>@terrahq/lazy — Demo</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css" />
         <style>
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font-family: system-ui, sans-serif; padding: 2rem; background: #111; color: #fff; }
-            h1 { margin-bottom: 1rem; }
+            h1 { margin-bottom: 0.5rem; }
+            h1 + p { color: #666; margin-bottom: 2rem; font-size: 0.9rem; }
             h2 { margin: 2rem 0 1rem; font-size: 1.2rem; color: #888; }
             .spacer { height: 100vh; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #444; }
             .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
@@ -52,12 +53,26 @@
                 opacity: 1;
                 outline: 2px solid red;
             }
+
+            /* Code examples */
+            details.code-example { margin: 1rem 0 2rem; }
+            details.code-example summary { cursor: pointer; color: #888; font-size: 0.85rem; font-family: monospace; padding: 0.5rem 0; }
+            details.code-example summary:hover { color: #fff; }
+            details.code-example pre { background: #1a1a2e; border: 1px solid #222; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; color: #c9d1d9; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+            details.code-example .cm { color: #6a737d; }
+            details.code-example .kw { color: #ff7b72; }
+            details.code-example .st { color: #a5d6ff; }
+            details.code-example .fn { color: #d2a8ff; }
         </style>
     </head>
     <body>
-        <h1>@terrahq/lazy — Demo</h1>
+        <h1>@terrahq/lazy</h1>
+        <p>Lightweight lazy loading built on IntersectionObserver. Zero dependencies.</p>
 
-        <h2>Images (scroll down)</h2>
+        <!-- ════════════════════════════════════════════
+             1. IMAGES
+        ════════════════════════════════════════════ -->
+        <h2>1. Images</h2>
         <div class="spacer">Scroll down to load images</div>
 
         <div class="grid">
@@ -74,7 +89,30 @@
             <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy6/600/400" alt="Demo 6" />
         </div>
 
-        <h2>Background Images</h2>
+        <details class="code-example" open>
+            <summary>HTML + CSS + JS</summary>
+            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
+&lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"photo.jpg"</span> alt="..." /&gt;
+
+<span class="cm">/* CSS */</span>
+.g--lazy-01 {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.g--lazy-01--is-active {
+    opacity: 1;
+}
+
+<span class="cm">// JS</span>
+<span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             2. BACKGROUND IMAGES
+        ════════════════════════════════════════════ -->
+        <h2>2. Background Images</h2>
         <div class="spacer">Scroll down for backgrounds</div>
 
         <div class="grid">
@@ -83,7 +121,19 @@
             <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/lazy9/600/400"></div>
         </div>
 
-        <h2>Videos</h2>
+        <details class="code-example" open>
+            <summary>HTML</summary>
+            <pre><span class="cm">&lt;!-- Any non-img/video/iframe element uses background-image --&gt;</span>
+&lt;div <span class="kw">class</span>=<span class="st">"g--lazy-01 hero"</span> <span class="kw">data-src</span>=<span class="st">"hero.jpg"</span>&gt;&lt;/div&gt;
+
+<span class="cm">// Lazy preloads with new Image(), then applies:</span>
+<span class="cm">// element.style.backgroundImage = url("hero.jpg")</span></pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             3. VIDEOS
+        ════════════════════════════════════════════ -->
+        <h2>3. Videos</h2>
         <div class="spacer">Scroll down for videos</div>
 
         <div class="grid">
@@ -94,7 +144,22 @@
             <video class="g--lazy-01" muted loop playsinline autoplay data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"></video>
         </div>
 
-        <h2>Iframes</h2>
+        <details class="code-example" open>
+            <summary>HTML</summary>
+            <pre><span class="cm">&lt;!-- Direct src --&gt;</span>
+&lt;video <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"clip.mp4"</span> muted autoplay loop playsinline&gt;&lt;/video&gt;
+
+<span class="cm">&lt;!-- Multiple sources --&gt;</span>
+&lt;video <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> muted autoplay loop playsinline&gt;
+    &lt;source <span class="kw">data-src</span>=<span class="st">"clip.webm"</span> type="video/webm" /&gt;
+    &lt;source <span class="kw">data-src</span>=<span class="st">"clip.mp4"</span> type="video/mp4" /&gt;
+&lt;/video&gt;</pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             4. IFRAMES
+        ════════════════════════════════════════════ -->
+        <h2>4. Iframes</h2>
         <div class="spacer">Scroll down for iframes</div>
 
         <div class="grid">
@@ -103,7 +168,15 @@
             <iframe class="g--lazy-01" data-src="https://www.youtube.com/embed/9bZkp7q19f0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
-        <h2>Manual Trigger (click to load)</h2>
+        <details class="code-example" open>
+            <summary>HTML</summary>
+            <pre>&lt;iframe <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"https://www.youtube.com/embed/VIDEO_ID"</span>&gt;&lt;/iframe&gt;</pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             5. MANUAL TRIGGER
+        ════════════════════════════════════════════ -->
+        <h2>5. Manual Trigger (click to load)</h2>
 
         <div class="grid">
             <div class="manual-card">
@@ -134,7 +207,28 @@
             </div>
         </div>
 
-        <h2>Infinite Marquee + Lazy (continuous horizontal loop)</h2>
+        <details class="code-example" open>
+            <summary>HTML + JS</summary>
+            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
+&lt;button <span class="kw">id</span>=<span class="st">"btn"</span>&gt;Load image&lt;/button&gt;
+&lt;img <span class="kw">id</span>=<span class="st">"hero"</span> <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"hero.jpg"</span> alt="..." /&gt;
+
+<span class="cm">// JS — create instance then immediately destroy observer</span>
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>({
+    selector: <span class="st">'.g--lazy-01'</span>,
+});
+lazy.<span class="fn">destroy</span>(); <span class="cm">// no auto-loading</span>
+
+<span class="cm">// Load on click</span>
+document.<span class="fn">querySelector</span>(<span class="st">'#btn'</span>).<span class="fn">addEventListener</span>(<span class="st">'click'</span>, () =&gt; {
+    lazy.<span class="fn">load</span>(document.<span class="fn">querySelector</span>(<span class="st">'#hero'</span>));
+});</pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             6. INFINITE MARQUEE
+        ════════════════════════════════════════════ -->
+        <h2>6. Infinite Marquee + Lazy</h2>
         <div class="spacer">Scroll down for marquee</div>
 
         <div class="marquee" id="marquee">
@@ -159,42 +253,115 @@
             <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev6/700/500" alt="Marquee Rev 6" /></div>
         </div>
 
-        <h2>Tiny Slider + Lazy (horizontal scroll)</h2>
+        <details class="code-example" open>
+            <summary>HTML + CSS + JS</summary>
+            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
+&lt;div <span class="kw">class</span>=<span class="st">"marquee"</span> <span class="kw">id</span>=<span class="st">"marquee"</span>&gt;
+    &lt;div class="marquee-item"&gt;
+        &lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"image.jpg"</span> alt="..." /&gt;
+    &lt;/div&gt;
+    <span class="cm">&lt;!-- more items... --&gt;</span>
+&lt;/div&gt;
+
+<span class="cm">/* CSS */</span>
+.marquee {
+    display: flex;
+    overflow: hidden;
+    height: 250px;
+}
+.marquee-item {
+    flex-shrink: 0;
+    width: 350px;
+    height: 100%;
+}
+
+<span class="cm">// JS</span>
+<span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+<span class="kw">import</span> gsap <span class="kw">from</span> <span class="st">'gsap'</span>;
+<span class="kw">import</span> { horizontalLoop } <span class="kw">from</span> <span class="st">'@andresclua/infinite-marquee-gsap'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();
+
+<span class="kw">const</span> el = document.<span class="fn">querySelector</span>(<span class="st">'#marquee'</span>);
+<span class="kw">const</span> loop = <span class="fn">horizontalLoop</span>(el.children, {
+    paused: <span class="kw">false</span>,
+    repeat: -1,
+    speed: 1,
+});
+
+<span class="cm">// Pause on hover</span>
+el.<span class="fn">addEventListener</span>(<span class="st">'mouseenter'</span>, () =&gt; {
+    gsap.<span class="fn">to</span>(loop, { timeScale: 0, overwrite: <span class="kw">true</span> });
+});
+el.<span class="fn">addEventListener</span>(<span class="st">'mouseleave'</span>, () =&gt; {
+    gsap.<span class="fn">to</span>(loop, { timeScale: 1, overwrite: <span class="kw">true</span> });
+});
+
+<span class="cm">// IntersectionObserver picks up items as GSAP</span>
+<span class="cm">// transforms move them into the viewport. No revalidate() needed.</span></pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             7. TINY SLIDER
+        ════════════════════════════════════════════ -->
+        <h2>7. Tiny Slider + Lazy</h2>
         <div class="spacer">Scroll down for slider</div>
 
         <div class="slider-wrapper">
             <div id="slider">
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide1/1200/400" alt="Slide 1" />
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide2/1200/400" alt="Slide 2" />
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide3/1200/400" alt="Slide 3" />
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide4/1200/400" alt="Slide 4" />
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide5/1200/400" alt="Slide 5" />
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide6/1200/400" alt="Slide 6" />
-                </div>
-                <div class="slider-item">
-                    <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/slide7/1200/400"></div>
-                </div>
-                <div class="slider-item">
-                    <img class="g--lazy-01" data-src="https://picsum.photos/seed/slide8/1200/400" alt="Slide 8" />
-                </div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide1/1200/400" alt="Slide 1" /></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide2/1200/400" alt="Slide 2" /></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide3/1200/400" alt="Slide 3" /></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide4/1200/400" alt="Slide 4" /></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide5/1200/400" alt="Slide 5" /></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide6/1200/400" alt="Slide 6" /></div>
+                <div class="slider-item"><div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/slide7/1200/400"></div></div>
+                <div class="slider-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/slide8/1200/400" alt="Slide 8" /></div>
             </div>
         </div>
 
-        <h2>Error Test</h2>
+        <details class="code-example" open>
+            <summary>JS</summary>
+            <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+<span class="kw">import</span> { tns } <span class="kw">from</span> <span class="st">'tiny-slider'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();
+
+<span class="kw">const</span> slider = <span class="fn">tns</span>({
+    container: <span class="st">'#slider'</span>,
+    items: 3,
+    loop: <span class="kw">false</span>,
+});
+
+<span class="cm">// After each slide transition, revalidate so newly</span>
+<span class="cm">// visible slides get observed and loaded</span>
+slider.events.<span class="fn">on</span>(<span class="st">'transitionEnd'</span>, () =&gt; {
+    lazy.<span class="fn">revalidate</span>();
+});</pre>
+        </details>
+
+        <!-- ════════════════════════════════════════════
+             8. ERROR
+        ════════════════════════════════════════════ -->
+        <h2>8. Error Handling</h2>
         <div class="grid">
             <img class="g--lazy-01" data-src="https://invalid-url-that-will-fail.test/no-image.jpg" alt="Error test" />
         </div>
+
+        <details class="code-example" open>
+            <summary>JS</summary>
+            <pre><span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>({
+    <span class="fn">onError</span>: (el) =&gt; {
+        console.warn(<span class="st">'Failed to load:'</span>, el);
+    },
+    <span class="fn">onComplete</span>: () =&gt; {
+        console.log(<span class="st">'All elements processed (success + errors)'</span>);
+    },
+});
+
+<span class="cm">// CSS class g--lazy-01--is-error is added automatically</span>
+<span class="cm">// Style it however you want (red outline, placeholder, etc.)</span></pre>
+        </details>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
         <script type="module">
@@ -209,6 +376,7 @@
                 onLoading: (el) => console.log('Loading:', el),
                 onSuccess: (el) => console.log('Loaded:', el),
                 onError: (el) => console.log('Error:', el),
+                onComplete: () => console.log('All elements processed'),
             });
 
             // Manual lazy — no observer, only loads via .load()
@@ -224,7 +392,7 @@
             // Disconnect observer so nothing auto-loads
             manualLazy.destroy();
 
-            // Infinite Marquee — continuous horizontal loop using horizontalLoop directly
+            // Infinite Marquee — continuous horizontal loop
             const marqueeEl = document.querySelector('#marquee');
             const marqueeLoop = horizontalLoop(marqueeEl.children, {
                 paused: false,
@@ -232,7 +400,6 @@
                 speed: 1,
             });
 
-            // Pause on hover
             marqueeEl.addEventListener('mouseenter', () => gsap.to(marqueeLoop, { timeScale: 0, overwrite: true }));
             marqueeEl.addEventListener('mouseleave', () => gsap.to(marqueeLoop, { timeScale: 1, overwrite: true }));
 
@@ -249,7 +416,7 @@
             marqueeRevEl.addEventListener('mouseenter', () => gsap.to(marqueeRevLoop, { timeScale: 0, overwrite: true }));
             marqueeRevEl.addEventListener('mouseleave', () => gsap.to(marqueeRevLoop, { timeScale: -1, overwrite: true }));
 
-            // Tiny Slider — slides become visible on swipe, IO picks them up
+            // Tiny Slider
             const slider = tns({
                 container: '#slider',
                 items: 1,
@@ -265,16 +432,14 @@
                 },
             });
 
-            // After each slide transition, revalidate so newly visible slides get observed
             slider.events.on('transitionEnd', () => {
                 lazy.revalidate();
             });
 
-            // Wire up buttons
+            // Wire up manual buttons
             document.querySelectorAll('.btn-load').forEach((btn) => {
                 btn.addEventListener('click', () => {
                     if (btn.hasAttribute('data-all')) {
-                        // Load all remaining manual elements
                         document.querySelectorAll('.g--lazy-manual').forEach((el) => {
                             manualLazy.load(el);
                         });

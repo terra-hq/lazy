@@ -1,5 +1,7 @@
 # @terrahq/lazy
 
+**[Live Demo](https://terra-lazy.netlify.app/)**
+
 Lightweight lazy loading library built on `IntersectionObserver`. Zero dependencies.
 
 Supports `<img>`, `<picture>`, `<video>`, `<iframe>`, and background images.
