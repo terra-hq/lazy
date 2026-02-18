@@ -12,9 +12,9 @@
         }
     },
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --config vite.config.demo.js",
         "build": "vite build",
-        "preview": "vite preview"
+        "build:demo": "vite build --config vite.config.demo.js"
     },
     "devDependencies": {
         "@andresclua/infinite-marquee-gsap": "^0.0.15",
