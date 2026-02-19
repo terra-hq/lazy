@@ -54,15 +54,19 @@
                 outline: 2px solid red;
             }
 
-            /* Code examples */
-            details.code-example { margin: 1rem 0 2rem; }
-            details.code-example summary { cursor: pointer; color: #888; font-size: 0.85rem; font-family: monospace; padding: 0.5rem 0; }
-            details.code-example summary:hover { color: #fff; }
-            details.code-example pre { background: #1a1a2e; border: 1px solid #222; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; color: #c9d1d9; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
-            details.code-example .cm { color: #6a737d; }
-            details.code-example .kw { color: #ff7b72; }
-            details.code-example .st { color: #a5d6ff; }
-            details.code-example .fn { color: #d2a8ff; }
+            /* Code tabs */
+            .code-block { margin: 1rem 0 2rem; }
+            .code-tabs { display: flex; gap: 0; border-bottom: 1px solid #333; }
+            .code-tabs__btn { background: none; border: none; color: #666; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; padding: 0.5rem 1.2rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-color 0.2s; }
+            .code-tabs__btn:hover { color: #aaa; }
+            .code-tabs__btn--active { color: #d2a8ff; border-bottom-color: #d2a8ff; }
+            .code-panel { display: none; }
+            .code-panel--active { display: block; }
+            .code-panel pre { background: #1a1a2e; border: 1px solid #222; border-top: none; border-radius: 0 0 8px 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.8rem; line-height: 1.6; color: #c9d1d9; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; }
+            .code-panel .cm { color: #6a737d; }
+            .code-panel .kw { color: #ff7b72; }
+            .code-panel .st { color: #a5d6ff; }
+            .code-panel .fn { color: #d2a8ff; }
         </style>
     </head>
     <body>
@@ -89,25 +93,30 @@
             <img class="g--lazy-01" data-src="https://picsum.photos/seed/lazy6/600/400" alt="Demo 6" />
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML + CSS + JS</summary>
-            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
-&lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"photo.jpg"</span> alt="..." /&gt;
+        <div class="code-block">
+            <div class="code-tabs" data-group="images">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+                <button class="code-tabs__btn" data-tab="css">CSS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="images" data-tab="html">
+                <pre>&lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"photo.jpg"</span> alt="..." /&gt;</pre>
+            </div>
+            <div class="code-panel" data-group="images" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
 
-<span class="cm">/* CSS */</span>
-.g--lazy-01 {
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
+            </div>
+            <div class="code-panel" data-group="images" data-tab="css">
+                <pre>.g--lazy-01 {
     opacity: 0;
     transition: opacity 0.4s ease;
 }
 .g--lazy-01--is-active {
     opacity: 1;
-}
-
-<span class="cm">// JS</span>
-<span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
-
-<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
-        </details>
+}</pre>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              2. BACKGROUND IMAGES
@@ -121,14 +130,24 @@
             <div class="g--lazy-01 bg-item" data-src="https://picsum.photos/seed/lazy9/600/400"></div>
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML</summary>
-            <pre><span class="cm">&lt;!-- Any non-img/video/iframe element uses background-image --&gt;</span>
+        <div class="code-block">
+            <div class="code-tabs" data-group="backgrounds">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="backgrounds" data-tab="html">
+                <pre><span class="cm">&lt;!-- Any non-img/video/iframe element uses background-image --&gt;</span>
 &lt;div <span class="kw">class</span>=<span class="st">"g--lazy-01 hero"</span> <span class="kw">data-src</span>=<span class="st">"hero.jpg"</span>&gt;&lt;/div&gt;
 
 <span class="cm">// Lazy preloads with new Image(), then applies:</span>
 <span class="cm">// element.style.backgroundImage = url("hero.jpg")</span></pre>
-        </details>
+            </div>
+            <div class="code-panel" data-group="backgrounds" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              3. VIDEOS
@@ -144,9 +163,13 @@
             <video class="g--lazy-01" muted loop playsinline autoplay data-src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"></video>
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML</summary>
-            <pre><span class="cm">&lt;!-- Direct src --&gt;</span>
+        <div class="code-block">
+            <div class="code-tabs" data-group="videos">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="videos" data-tab="html">
+                <pre><span class="cm">&lt;!-- Direct src --&gt;</span>
 &lt;video <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"clip.mp4"</span> muted autoplay loop playsinline&gt;&lt;/video&gt;
 
 <span class="cm">&lt;!-- Multiple sources --&gt;</span>
@@ -154,7 +177,13 @@
     &lt;source <span class="kw">data-src</span>=<span class="st">"clip.webm"</span> type="video/webm" /&gt;
     &lt;source <span class="kw">data-src</span>=<span class="st">"clip.mp4"</span> type="video/mp4" /&gt;
 &lt;/video&gt;</pre>
-        </details>
+            </div>
+            <div class="code-panel" data-group="videos" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              4. IFRAMES
@@ -168,10 +197,20 @@
             <iframe class="g--lazy-01" data-src="https://www.youtube.com/embed/9bZkp7q19f0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML</summary>
-            <pre>&lt;iframe <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"https://www.youtube.com/embed/VIDEO_ID"</span>&gt;&lt;/iframe&gt;</pre>
-        </details>
+        <div class="code-block">
+            <div class="code-tabs" data-group="iframes">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="iframes" data-tab="html">
+                <pre>&lt;iframe <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"https://www.youtube.com/embed/VIDEO_ID"</span>&gt;&lt;/iframe&gt;</pre>
+            </div>
+            <div class="code-panel" data-group="iframes" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+
+<span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();</pre>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              5. MANUAL TRIGGER
@@ -207,13 +246,19 @@
             </div>
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML + JS</summary>
-            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
-&lt;button <span class="kw">id</span>=<span class="st">"btn"</span>&gt;Load image&lt;/button&gt;
-&lt;img <span class="kw">id</span>=<span class="st">"hero"</span> <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"hero.jpg"</span> alt="..." /&gt;
+        <div class="code-block">
+            <div class="code-tabs" data-group="manual">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="manual" data-tab="html">
+                <pre>&lt;button <span class="kw">id</span>=<span class="st">"btn"</span>&gt;Load image&lt;/button&gt;
+&lt;img <span class="kw">id</span>=<span class="st">"hero"</span> <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"hero.jpg"</span> alt="..." /&gt;</pre>
+            </div>
+            <div class="code-panel" data-group="manual" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
 
-<span class="cm">// JS — create instance then immediately destroy observer</span>
+<span class="cm">// Create instance then immediately destroy observer</span>
 <span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>({
     selector: <span class="st">'.g--lazy-01'</span>,
 });
@@ -223,7 +268,8 @@ lazy.<span class="fn">destroy</span>(); <span class="cm">// no auto-loading</spa
 document.<span class="fn">querySelector</span>(<span class="st">'#btn'</span>).<span class="fn">addEventListener</span>(<span class="st">'click'</span>, () =&gt; {
     lazy.<span class="fn">load</span>(document.<span class="fn">querySelector</span>(<span class="st">'#hero'</span>));
 });</pre>
-        </details>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              6. INFINITE MARQUEE
@@ -253,30 +299,22 @@ document.<span class="fn">querySelector</span>(<span class="st">'#btn'</span>).<
             <div class="marquee-item"><img class="g--lazy-01" data-src="https://picsum.photos/seed/marqrev6/700/500" alt="Marquee Rev 6" /></div>
         </div>
 
-        <details class="code-example" open>
-            <summary>HTML + CSS + JS</summary>
-            <pre><span class="cm">&lt;!-- HTML --&gt;</span>
-&lt;div <span class="kw">class</span>=<span class="st">"marquee"</span> <span class="kw">id</span>=<span class="st">"marquee"</span>&gt;
+        <div class="code-block">
+            <div class="code-tabs" data-group="marquee">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+                <button class="code-tabs__btn" data-tab="css">CSS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="marquee" data-tab="html">
+                <pre>&lt;div <span class="kw">class</span>=<span class="st">"marquee"</span> <span class="kw">id</span>=<span class="st">"marquee"</span>&gt;
     &lt;div class="marquee-item"&gt;
         &lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"image.jpg"</span> alt="..." /&gt;
     &lt;/div&gt;
     <span class="cm">&lt;!-- more items... --&gt;</span>
-&lt;/div&gt;
-
-<span class="cm">/* CSS */</span>
-.marquee {
-    display: flex;
-    overflow: hidden;
-    height: 250px;
-}
-.marquee-item {
-    flex-shrink: 0;
-    width: 350px;
-    height: 100%;
-}
-
-<span class="cm">// JS</span>
-<span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+&lt;/div&gt;</pre>
+            </div>
+            <div class="code-panel" data-group="marquee" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
 <span class="kw">import</span> gsap <span class="kw">from</span> <span class="st">'gsap'</span>;
 <span class="kw">import</span> { horizontalLoop } <span class="kw">from</span> <span class="st">'@andresclua/infinite-marquee-gsap'</span>;
 
@@ -299,7 +337,20 @@ el.<span class="fn">addEventListener</span>(<span class="st">'mouseleave'</span>
 
 <span class="cm">// IntersectionObserver picks up items as GSAP</span>
 <span class="cm">// transforms move them into the viewport. No revalidate() needed.</span></pre>
-        </details>
+            </div>
+            <div class="code-panel" data-group="marquee" data-tab="css">
+                <pre>.marquee {
+    display: flex;
+    overflow: hidden;
+    height: 250px;
+}
+.marquee-item {
+    flex-shrink: 0;
+    width: 350px;
+    height: 100%;
+}</pre>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              7. TINY SLIDER
@@ -320,9 +371,21 @@ el.<span class="fn">addEventListener</span>(<span class="st">'mouseleave'</span>
             </div>
         </div>
 
-        <details class="code-example" open>
-            <summary>JS</summary>
-            <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
+        <div class="code-block">
+            <div class="code-tabs" data-group="slider">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="html">HTML</button>
+                <button class="code-tabs__btn" data-tab="js">JS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="slider" data-tab="html">
+                <pre>&lt;div <span class="kw">id</span>=<span class="st">"slider"</span>&gt;
+    &lt;div class="slider-item"&gt;
+        &lt;img <span class="kw">class</span>=<span class="st">"g--lazy-01"</span> <span class="kw">data-src</span>=<span class="st">"slide.jpg"</span> alt="..." /&gt;
+    &lt;/div&gt;
+    <span class="cm">&lt;!-- more slides... --&gt;</span>
+&lt;/div&gt;</pre>
+            </div>
+            <div class="code-panel" data-group="slider" data-tab="js">
+                <pre><span class="kw">import</span> Lazy <span class="kw">from</span> <span class="st">'@terrahq/lazy'</span>;
 <span class="kw">import</span> { tns } <span class="kw">from</span> <span class="st">'tiny-slider'</span>;
 
 <span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>();
@@ -338,7 +401,8 @@ el.<span class="fn">addEventListener</span>(<span class="st">'mouseleave'</span>
 slider.events.<span class="fn">on</span>(<span class="st">'transitionEnd'</span>, () =&gt; {
     lazy.<span class="fn">revalidate</span>();
 });</pre>
-        </details>
+            </div>
+        </div>
 
         <!-- ════════════════════════════════════════════
              8. ERROR
@@ -348,21 +412,50 @@ slider.events.<span class="fn">on</span>(<span class="st">'transitionEnd'</span>
             <img class="g--lazy-01" data-src="https://invalid-url-that-will-fail.test/no-image.jpg" alt="Error test" />
         </div>
 
-        <details class="code-example" open>
-            <summary>JS</summary>
-            <pre><span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>({
+        <div class="code-block">
+            <div class="code-tabs" data-group="error">
+                <button class="code-tabs__btn code-tabs__btn--active" data-tab="js">JS</button>
+                <button class="code-tabs__btn" data-tab="css">CSS</button>
+            </div>
+            <div class="code-panel code-panel--active" data-group="error" data-tab="js">
+                <pre><span class="kw">const</span> lazy = <span class="kw">new</span> <span class="fn">Lazy</span>({
     <span class="fn">onError</span>: (el) =&gt; {
         console.warn(<span class="st">'Failed to load:'</span>, el);
     },
     <span class="fn">onComplete</span>: () =&gt; {
         console.log(<span class="st">'All elements processed (success + errors)'</span>);
     },
-});
+});</pre>
+            </div>
+            <div class="code-panel" data-group="error" data-tab="css">
+                <pre><span class="cm">/* Added automatically via errorClass */</span>
+.g--lazy-01--is-error {
+    opacity: 1;
+    outline: 2px solid red;
+}</pre>
+            </div>
+        </div>
 
-<span class="cm">// CSS class g--lazy-01--is-error is added automatically</span>
-<span class="cm">// Style it however you want (red outline, placeholder, etc.)</span></pre>
-        </details>
-
+        <script>
+            document.querySelectorAll('.code-tabs').forEach(function(tabs) {
+                tabs.addEventListener('click', function(e) {
+                    var btn = e.target.closest('.code-tabs__btn');
+                    if (!btn) return;
+                    var group = tabs.getAttribute('data-group');
+                    var tab = btn.getAttribute('data-tab');
+                    tabs.querySelectorAll('.code-tabs__btn').forEach(function(b) {
+                        b.classList.remove('code-tabs__btn--active');
+                    });
+                    btn.classList.add('code-tabs__btn--active');
+                    document.querySelectorAll('.code-panel[data-group="' + group + '"]').forEach(function(panel) {
+                        panel.classList.remove('code-panel--active');
+                        if (panel.getAttribute('data-tab') === tab) {
+                            panel.classList.add('code-panel--active');
+                        }
+                    });
+                });
+            });
+        </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
         <script type="module">
             import Lazy from './js/Lazy.js';
