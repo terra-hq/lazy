@@ -356,7 +356,7 @@ MIT
 
 ## Changelog
 
-### 0.0.2
+### 0.0.7
 
 **Fix: images loading abruptly without opacity transition (`_loadImage`)**
 
