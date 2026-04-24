@@ -99,6 +99,7 @@ class Lazy {
     _loadImage(el) {
         const src = el.getAttribute(this.settings.src);
         const srcset = el.getAttribute(this.settings.srcset);
+        const sizes = el.getAttribute('sizes');
 
         if (!src && !srcset) {
             this._onError(el);
@@ -107,10 +108,19 @@ class Lazy {
 
         const img = new Image();
 
-        img.onload = () => {
-            if (src) el.src = src;
+        if (sizes) img.sizes = sizes;
+
+        img.onload = async () => {
             if (srcset) el.srcset = srcset;
-            this._onLoad(el);
+            if (src) el.src = src;
+
+            if ('decode' in el) {
+                try { await el.decode(); } catch (_) {}
+            }
+
+            requestAnimationFrame(() => {
+                this._onLoad(el);
+            });
         };
 
         img.onerror = () => {

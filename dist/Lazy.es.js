@@ -54,44 +54,51 @@ class c {
     t === "img" ? this._loadImage(s) : t === "picture" ? this._loadPicture(s) : t === "video" ? this._loadVideo(s) : t === "iframe" ? this._loadIframe(s) : this._loadBackground(s);
   }
   _loadImage(s) {
-    const t = s.getAttribute(this.settings.src), i = s.getAttribute(this.settings.srcset);
+    const t = s.getAttribute(this.settings.src), i = s.getAttribute(this.settings.srcset), o = s.getAttribute("sizes");
     if (!t && !i) {
       this._onError(s);
       return;
     }
     const e = new Image();
-    e.onload = () => {
-      t && (s.src = t), i && (s.srcset = i), this._onLoad(s);
+    o && (e.sizes = o), e.onload = async () => {
+      if (i && (s.srcset = i), t && (s.src = t), "decode" in s)
+        try {
+          await s.decode();
+        } catch {
+        }
+      requestAnimationFrame(() => {
+        this._onLoad(s);
+      });
     }, e.onerror = () => {
       this._onError(s);
     }, i && (e.srcset = i), t && (e.src = t);
   }
   _loadPicture(s) {
-    s.querySelectorAll("source").forEach((e) => {
-      const o = e.getAttribute(this.settings.srcset);
-      o && (e.srcset = o);
+    s.querySelectorAll("source").forEach((o) => {
+      const e = o.getAttribute(this.settings.srcset);
+      e && (o.srcset = e);
     });
     const i = s.querySelector("img");
     if (i) {
       this._loadImage(i), i.onload, i.onerror;
-      const e = () => {
+      const o = () => {
         i.classList.contains(this.settings.successClass) ? this._onLoad(s) : i.classList.contains(this.settings.errorClass) && this._onError(s);
-      }, o = new MutationObserver(() => {
-        e(), o.disconnect();
+      }, e = new MutationObserver(() => {
+        o(), e.disconnect();
       });
-      o.observe(i, { attributes: !0, attributeFilter: ["class"] });
+      e.observe(i, { attributes: !0, attributeFilter: ["class"] });
     } else
       this._onError(s);
   }
   _loadVideo(s) {
     const t = s.querySelectorAll("source");
     let i = !1;
-    t.forEach((o) => {
-      const r = o.getAttribute(this.settings.src);
-      r && (o.src = r, i = !0);
+    t.forEach((e) => {
+      const r = e.getAttribute(this.settings.src);
+      r && (e.src = r, i = !0);
     });
-    const e = s.getAttribute(this.settings.src);
-    e && (s.src = e, i = !0), i ? (s.load(), this._onLoad(s)) : this._onError(s);
+    const o = s.getAttribute(this.settings.src);
+    o && (s.src = o, i = !0), i ? (s.load(), this._onLoad(s)) : this._onError(s);
   }
   _loadIframe(s) {
     const t = s.getAttribute(this.settings.src);

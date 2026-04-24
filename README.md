@@ -351,3 +351,46 @@ npm run build    # Build to dist/ (ES + UMD)
 ## License
 
 MIT
+
+---
+
+## Changelog
+
+### 0.0.2
+
+**Fix: images loading abruptly without opacity transition (`_loadImage`)**
+
+Two issues caused lazy-loaded images to snap in at full opacity instead of fading in smoothly, especially noticeable on first load or slow connections.
+
+**Issue 1 — wrong responsive image preloaded**
+
+The `new Image()` used for preloading had no `sizes` attribute. The real `<img>` element on the page does have `sizes` (e.g. `"(max-width: 810px) 95vw, 50vw"`). The browser evaluates `srcset` differently for each: the preload might download a 2000px image, but then when `el.srcset` was set, the browser re-evaluated using the element's `sizes` and picked a 800px image instead — triggering a second network request. The loaded class was already added at this point, so the fade started before the correct image arrived.
+
+Fix: `img.sizes` is now copied from the element before preloading, so the browser picks the same responsive URL in both cases.
+
+**Issue 2 — CSS transition skipped because class was added before the browser painted**
+
+`img.onload` fired → `el.src` was set → `_onLoad` was called → loaded class added. This all happened inside a microtask. Microtasks run before the browser's next paint cycle, so the browser never rendered the element at `opacity: 0` — it rendered it at `opacity: 1` directly. No initial state = no transition.
+
+Fix: after `el.decode()` (which ensures the image is fully decoded in memory), a `requestAnimationFrame` delays the loaded class by one paint frame. The browser paints the decoded image at `opacity: 0` first, sees the class change in the next frame, and fires the CSS transition correctly.
+
+```js
+// Before
+img.onload = () => {
+    if (srcset) el.srcset = srcset;
+    if (src) el.src = src;
+    this._onLoad(el); // called immediately — transition often skipped
+};
+
+// After
+img.onload = async () => {
+    if (srcset) el.srcset = srcset;
+    if (src) el.src = src;
+    if ('decode' in el) {
+        try { await el.decode(); } catch (_) {}
+    }
+    requestAnimationFrame(() => {
+        this._onLoad(el); // called after one paint frame — transition always fires
+    });
+};
+```
